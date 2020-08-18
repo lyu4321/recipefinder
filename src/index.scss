@@ -1,0 +1,34 @@
+@import "../node_modules/bootstrap/scss/functions";
+
+/* -------begin customization-------- */
+$colors: (
+  "" + blue: #004C9E
+);
+
+/* 80 required to bring primary color to AAA standards */
+$theme-colors: (
+  primary: red
+);
+
+@import "../node_modules/bootstrap/scss/variables";
+
+/* put other customization in here */
+
+// /* -------end customization-------- */
+
+/* finally, import Bootstrap to set the changes! */
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}

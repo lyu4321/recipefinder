@@ -1,0 +1,100 @@
+$primary-color: #ffcc5f;
+$primary: #ffcc5f;
+$secondary-color: #dee2e6;
+$page-link-color: #000;
+$page-link-background-color: #fff;
+$footer-link-color: #6c757d;
+$body-bg: #000;
+
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+html {
+  overflow-y: scroll;
+}
+
+.modal {
+  margin-top: 5rem;
+  overflow-y: auto;
+  max-height: 75vh;
+}
+
+.modal-open {
+  overflow: auto;
+}
+
+.modal-open[style] {
+  padding-right: 0px !important;
+}
+
+.btn {
+  background-color: $primary-color !important;
+  border: 1px solid $primary-color !important;
+}
+
+.spinner-border {
+  color: $primary-color;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.footer a {
+  color: $footer-link-color !important;
+}
+
+.page-link {
+  color: $page-link-color !important;
+  background-color: $page-link-background-color !important;
+  border: 1px solid $secondary-color !important;
+}
+
+.active {
+  color: $page-link-background-color !important;
+  background-color: $primary-color !important;
+  border: 1px solid $secondary-color !important;
+}
+
+.title {
+  margin-top: 10rem;
+}
+
+.body {
+  min-height: 70vh;
+}
+
+.body-left {
+  background-color: $primary-color;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.recipe-card {
+  width: 40%;
+}
+
+@media (max-width: 480px) {
+  .header {
+    max-width: 100% !important;
+  }
+  .page {
+    display: none;
+  }
+  .title {
+    margin-top: 2rem;
+  }
+  .body {
+    min-height: 0;
+  }
+  .recipe-card {
+    width: 80%;
+  }
+  .col-left {
+    max-width: 80% !important;
+  }
+  .col-right {
+    max-width: 20% !important;
+  }
+}
