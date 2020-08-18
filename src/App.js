@@ -22,7 +22,7 @@ function App() {
   );
   const [active, setActive] = useState(0)
   const [open, setOpen] = useState(false);
-  const api_key = process.env.REACT_APP_api_key;
+  const api_key = process.env.REACT_APP_API_KEY;
 
   const handleChange = (e, i) => {
     let newArray = [...formFields];
