@@ -1,100 +1,168 @@
-$primary-color: #ffcc5f;
-$primary: #ffcc5f;
-$secondary-color: #dee2e6;
+$primary-color: #cb997e;
 $page-link-color: #000;
 $page-link-background-color: #fff;
-$footer-link-color: #6c757d;
-$body-bg: #000;
 
 * {
   font-family: "Poppins", sans-serif;
 }
 
-html {
-  overflow-y: scroll;
+// Components
+
+input {
+  max-width: 20%;
 }
 
 .modal {
   margin-top: 5rem;
-  overflow-y: auto;
   max-height: 75vh;
 }
 
-.modal-open {
-  overflow: auto;
-}
-
 .modal-open[style] {
-  padding-right: 0px !important;
+  overflow-y: auto;
+  padding-right: 0 !important;
 }
 
 .btn {
+  color: #fff !important;
   background-color: $primary-color !important;
   border: 1px solid $primary-color !important;
 }
 
-.spinner-border {
-  color: $primary-color;
+.alert {
+  padding: 0.375rem 0.75rem !important;
 }
 
 .cursor-pointer {
   cursor: pointer;
 }
 
-.footer a {
-  color: $footer-link-color !important;
+input {
+  padding: 0.37rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.3rem;
 }
 
+// App.js
+
+.main-container {
+  position: relative;
+  min-height: 100vh;
+}
+
+.background {
+  background-image: url("./images/background.jpg");
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.title {
+  margin-top: 20rem;
+  transition: 1s ease;
+  padding-bottom: 11rem;
+}
+
+.submit {
+  margin-top: 1rem;
+}
+
+.recipe-container {
+  position: relative;
+  max-width: 100%;
+  margin-top: 1rem;
+}
+
+.recipe-card {
+  width: 20%;
+}
+
+.recipe-title {
+  width: 80% !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+  text-align: left;
+}
+
+.recipe-save {
+  width: 20% !important;
+  text-align: right;
+}
+
+.recipe-image {
+  max-width: 80%;
+}
+
+.get-recipe {
+  max-width: 50%;
+}
+
+.pagination-container {
+  max-width: 100%;
+  margin-top: 1rem;
+}
+
+.footer {
+  color: #fff;
+  background-color: $primary-color;
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+  height: 7rem;
+  padding: 1.5rem 0;
+}
+
+.footer a {
+  color: #fff;
+}
+
+.footer a:hover {
+  color: #653821;
+}
+
+// Saved Recipes Page
+
+.recipe-title-button {
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Pagination
+
 .page-link {
+  width: 50px;
   color: $page-link-color !important;
   background-color: $page-link-background-color !important;
-  border: 1px solid $secondary-color !important;
+  cursor: pointer;
 }
 
 .active {
   color: $page-link-background-color !important;
   background-color: $primary-color !important;
-  border: 1px solid $secondary-color !important;
+  border: 1px solid $primary-color !important;
 }
 
-.title {
-  margin-top: 10rem;
-}
-
-.body {
-  min-height: 70vh;
-}
-
-.body-left {
-  background-color: $primary-color;
-  font-size: 30px;
-  font-weight: 700;
-}
-
-.recipe-card {
-  width: 40%;
-}
-
-@media (max-width: 480px) {
-  .header {
-    max-width: 100% !important;
+@media (max-width: 780px) {
+  input {
+    min-width: 40%;
   }
-  .page {
-    display: none;
-  }
-  .title {
-    margin-top: 2rem;
-  }
-  .body {
-    min-height: 0;
+  .page-link {
+    width: auto;
   }
   .recipe-card {
     width: 80%;
   }
-  .col-left {
-    max-width: 80% !important;
+}
+
+@media (max-width: 480px) {
+  .title {
+    margin-top: 15rem;
   }
-  .col-right {
-    max-width: 20% !important;
+  .button-text {
+    display: none;
   }
 }

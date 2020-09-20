@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import { Row, Col, Input, Button, Card, Spinner } from "reactstrap";
+import { Row, Col, Card, Alert, Spinner, Input, Button } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faStar, faSearch, faList } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faBorderStar } from "@fortawesome/free-regular-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import Pagination from "./Components/Pagination";
 import SavedRecipes from "./Components/SavedRecipes";
-import egg from "./images/egg.svg";
-import soup from "./images/soup.svg";
-import chicken from "./images/chicken.svg";
 import "./App.scss";
 
 function App() {
@@ -17,12 +14,14 @@ function App() {
   const [formFields, setFormFields] = useState([""]);
   const [recipes, setRecipes] = useState([]);
   const [currentRecipes, setCurrentRecipes] = useState([]);
-  const [savedRecipes, setSavedRecipes] = useState(
-    JSON.parse(localStorage.getItem("savedRecipes")) || []
-  );
-  const [active, setActive] = useState(0)
+  const [savedRecipes, setSavedRecipes] = useState(JSON.parse(localStorage.getItem("savedRecipes")) || []);
+  const [active, setActive] = useState(0);
   const [open, setOpen] = useState(false);
   const api_key = process.env.REACT_APP_API_KEY;
+
+  const toggle = () => {
+    setOpen(!open);
+  }
 
   const handleChange = (e, i) => {
     let newArray = [...formFields];
@@ -31,31 +30,23 @@ function App() {
   };
 
   const appendFormField = () => {
-    if (formFields.length < 5) {
-      const newFormField = "";
-      setFormFields([...formFields, newFormField]);
-    }
+    formFields.length < 5 && setFormFields([...formFields, ""]);
   };
 
   const handleSubmit = () => {
-    let ingredients = formFields.join(",+");
+    const ingredients = formFields.join(",+");
     setLoading(true);
     setError(null);
     setCurrentRecipes([]);
-    fetch(
-      `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&apiKey=${api_key}&number=100`
-    )
+    fetch(`https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&apiKey=${api_key}&number=100`)
       .then((response) => response.json())
       .then((data) => {
         if (data.length > 0) {
           setRecipes(data);
-          setCurrentRecipes(data.slice(0, 10));
+          setCurrentRecipes(data.slice(0, 20));
+          document.querySelector(".title").style.marginTop = window.matchMedia("(max-width: 480px)").matches ? "2rem" : "5rem";
         } else {
-          setError(
-            data.code
-              ? "Unable to fetch recipes at this time"
-              : "No recipes found"
-          );
+          setError(data.code ? "Unable to fetch recipes at this time" : "No recipes found");
         }
         setLoading(false);
       })
@@ -65,35 +56,24 @@ function App() {
   };
 
   const getRecipe = (id) => {
-    fetch(
-      `https://api.spoonacular.com/recipes/${id}/information?apiKey=${api_key}`
-    )
+    fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${api_key}`)
       .then((response) => response.json())
-      .then((data) => {
-        window.location.href = data.sourceUrl;
-      })
+      .then((data) => window.location.href = data.sourceUrl)
       .catch((err) => {
         console.log(err);
       });
   };
 
   const manageSavedRecipes = (id) => {
-    let savedItems = [...savedRecipes];
-    let index = savedItems.findIndex((x) => x.id === id);
+    const savedItems = [...savedRecipes];
+    const index = savedItems.findIndex((x) => x.id === id);
     if (index === -1) {
-      fetch(
-        `https://api.spoonacular.com/recipes/${id}/information?apiKey=${api_key}`
-      )
+      fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${api_key}`)
         .then((response) => response.json())
         .then((data) => {
           if (data) {
-            savedItems.push({
-              id: data.id,
-              title: data.title,
-              url: data.sourceUrl,
-            });
-            setSavedRecipes(savedItems);
-            localStorage.setItem("savedRecipes", JSON.stringify(savedItems));
+            setSavedRecipes(prevState => [...prevState, { id: data.id, title: data.title, url: data.sourceUrl }]);
+            localStorage.setItem("savedRecipes", JSON.stringify(savedRecipes));
           }
         })
         .catch((err) => {
@@ -107,173 +87,93 @@ function App() {
   };
 
   const jumpToPage = (e) => {
-    const paginationArray = Array.from(
-      Array(10),
-      (x, index) => (index + 1) * 9 + index
-    );
-    setActive(e)
-    setCurrentRecipes(
-      recipes.slice(paginationArray[e] - 9, paginationArray[e] + 1)
-    );
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
+    const paginationArray = Array.from(Array(5), (x, index) => (index + 1) * 19 + index);
+    setActive(e);
+    setCurrentRecipes(recipes.slice(paginationArray[e] - 19, paginationArray[e] + 1));
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
 
   const Icon = ({ id }) => {
     return <FontAwesomeIcon
-      icon={(savedRecipes.findIndex((x) => x.id === id) !== -1) ? faStar : faBorderStar}
+      icon={savedRecipes.findIndex((x) => x.id === id) !== -1 ? faStar : faBorderStar}
       className="cursor-pointer text-primary"
       size="lg"
-      onClick={() => manageSavedRecipes(id)}
-    />
-  }
+      onClick={() => manageSavedRecipes(id)} />
+  };
 
-  const hour = new Date().getHours();
-  const title =
-    hour >= 0 && hour < 11
-      ? "Breakfast?"
-      : hour >= 11 && hour < 17
-        ? "Lunch?"
-        : "Dinner?";
-  const logo =
-    hour >= 0 && hour < 11 ? egg : hour >= 11 && hour < 17 ? soup : chicken;
-
-  return (
-    <>
-      <Row style={{ minHeight: "100vh", maxWidth: "100%" }} className="m-0 p-0">
-        <Col className="p-0 text-center col-md-5 col-12 header body-left">
-          <div>
-            <div className="title">What's for {title}</div>
-            <div style={{ marginTop: "3rem" }}>
-              <img src={logo} alt="" style={{ maxWidth: "50%" }} />
-            </div>
-          </div>
-        </Col>
-        <Col className="p-0 col-md-7 col-12">
-          <div className="text-center title body">
-            {formFields.map((e, i) => (
-              <div key={i}>
-                <Input
-                  placeholder="Enter an ingredient"
-                  onChange={(e) => handleChange(e, i)}
-                  style={{ width: "40%" }}
-                  className="mr-2 mt-4 d-inline"
-                />
-                <Button
-                  onClick={appendFormField}
-                  style={{ visibility: i < 4 ? "visible" : "hidden" }}
-                >
-                  <FontAwesomeIcon icon={faPlus} />
-                </Button>
-              </div>
-            ))}
-            <div className="mt-4">
-              <Button type="submit" className="mr-2" onClick={handleSubmit}>
-                Find recipes
+  return <>
+    <Row className="main-container m-0">
+      <div className="background w-100 text-center">
+        <div className="title">
+          {formFields.map((e, i) => (
+            <div key={i}>
+              <Input placeholder="Enter an ingredient"
+                onChange={(e) => handleChange(e, i)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSubmit();
+                  }
+                }}
+                className="mr-2 d-inline" />
+              <Button onClick={appendFormField} style={{ visibility: i < 4 ? "visible" : "hidden" }}>
+                <FontAwesomeIcon icon={faPlus} />
               </Button>
-              <Button onClick={() => setOpen(!open)}>View saved recipes</Button>
             </div>
-            <Row
-              style={{
-                marginTop: "4rem",
-                maxWidth: "100%",
-                position: "relative",
-              }}
-              className="ml-0 mr-0 mb-1 p-0 justify-content-center grid-contaier"
-            >
-              {loading && <Spinner color="primary" />}
-              {error && <>{error}</>}
-              {currentRecipes.length > 0 &&
-                currentRecipes.map((e, i) => (
-                  <Card key={i} className="recipe-card m-2">
-                    <Row className="m-1" style={{ fontWeight: 700 }}>
-                      <Col
-                        style={{
-                          overflow: "hidden",
-                          whiteSpace: "nowrap",
-                          textOverflow: "ellipsis",
-                        }}
-                        className="text-left col-left"
-                        md={10}
-                      >
-                        {e.title}
-                      </Col>
-                      <Col className="text-right col-right" md={2}>
-                        <Icon id={e.id} />
-                      </Col>
-                    </Row>
-                    <Row className="mt-4 p-0">
-                      <Col className="ml-3 mr-3">
-                        <img src={e.image} alt="" style={{ maxWidth: "80%" }} />
-                      </Col>
-                    </Row>
-                    <Row className="mt-4 p-0">
-                      <Col className="m-0 p-0">
-                        <Button
-                          className="mb-4 button"
-                          onClick={() => getRecipe(e.id)}
-                          style={{ maxWidth: "50%" }}
-                        >
-                          Go to recipe
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Card>
-                ))}
-            </Row>
-            {currentRecipes.length > 0 && (
-              <Row
-                className="flex justify-content-center m-0 mt-2"
-                style={{ maxWidth: "100%" }}
-              >
-                <Pagination jumpToPage={jumpToPage} active={active} setActive={setActive} />
-              </Row>
+          ))}
+          <div className="submit">
+            <Button type="submit" className="mr-2" onClick={handleSubmit}>
+              <FontAwesomeIcon icon={faSearch} /><span className="button-text ml-2">Find recipes</span>
+            </Button>
+            <Button onClick={() => setOpen(!open)}>
+              <FontAwesomeIcon icon={faList} /><span className="button-text ml-2">View saved recipes</span>
+            </Button>
+          </div>
+          <Row className="recipe-container ml-0 mr-0 grid-container justify-content-center">
+            {loading && <Spinner color="primary" />}
+            {error && <Alert color="primary">{error}</Alert>}
+            {currentRecipes.length > 0 && currentRecipes.map((e, i) =>
+              <Card key={i} className="recipe-card ml-2 mr-2 mb-4">
+                <Row className="ml-2 mr-2 mt-2">
+                  <div className="recipe-title d-inline-block">
+                    {e.title}
+                  </div>
+                  <span className="recipe-save">
+                    <Icon id={e.id} />
+                  </span>
+                </Row>
+                <Row className="mt-4">
+                  <Col className="m-auto">
+                    <img src={e.image} alt="" className="recipe-image" />
+                  </Col>
+                </Row>
+                <Row className="mt-4">
+                  <Col>
+                    <Button className="get-recipe mb-4" onClick={() => getRecipe(e.id)}>
+                      Go to recipe
+                      </Button>
+                  </Col>
+                </Row>
+              </Card>
             )}
+          </Row>
+          {currentRecipes.length > 0 &&
+            <Row className="pagination-container flex justify-content-center">
+              <Pagination jumpToPage={jumpToPage} active={active} />
+            </Row>
+          }
+        </div>
+        <div className="footer">
+          <div className="mb-2">
+            <a href="https://github.com/lyu4321"><FontAwesomeIcon icon={faGithub} size="lg" /></a>
           </div>
-          <div
-            style={{
-              position: "relative",
-              bottom: "1rem",
-              maxWidth: "100%",
-              fontSize: "18px",
-            }}
-            className="mt-4 text-center footer"
-          >
-            <div className="mb-2">
-              <a href="https://github.com/lyu4321">
-                <FontAwesomeIcon icon={faGithub} size="lg" />
-              </a>
-            </div>
-            <div className="mb-2">
-              API provided by <a href="https://spoonacular.com/">Spoonacular</a>
-            </div>
-            <div>
-              Icons provided by{" "}
-              <a
-                href="https://www.flaticon.com/authors/dinosoftlabs"
-                title="DinosoftLabs"
-              >
-                DinosoftLabs
-              </a>{" "}
-              from{" "}
-              <a href="https://www.flaticon.com/" title="Flaticon">
-                www.flaticon.com
-              </a>
-            </div>
+          <div className="mb-2">
+            API provided by <a href="https://spoonacular.com/">Spoonacular</a>
           </div>
-        </Col>
-      </Row>
-      <SavedRecipes
-        open={open}
-        toggle={() => setOpen(!open)}
-        savedRecipes={savedRecipes}
-        manageSavedRecipes={manageSavedRecipes}
-      />
-    </>
-  );
+        </div>
+      </div>
+    </Row>
+    <SavedRecipes open={open} toggle={toggle} savedRecipes={savedRecipes} manageSavedRecipes={manageSavedRecipes} />
+  </>
 }
 
 export default App;

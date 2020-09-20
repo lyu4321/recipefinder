@@ -13,11 +13,10 @@
     "@testing-library/user-event": "^7.2.1",
     "bootstrap": "^4.5.2",
     "bootstrap-sass": "^3.4.1",
+    "classnames": "^2.2.6",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "react-text-loop": "^2.3.0",
     "reactstrap": "^8.5.1"
   },
   "scripts": {
