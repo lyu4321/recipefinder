@@ -44,7 +44,7 @@ function App() {
         if (data.length > 0) {
           setRecipes(data);
           setCurrentRecipes(data.slice(0, 20));
-          document.querySelector(".title").style.marginTop = window.matchMedia("(max-width: 480px)").matches ? "2rem" : "5rem";
+          document.querySelector(".title").style.marginTop = "5rem";
         } else {
           setError(data.code ? "Unable to fetch recipes at this time" : "No recipes found");
         }
@@ -96,7 +96,7 @@ function App() {
   const Icon = ({ id }) => {
     return <FontAwesomeIcon
       icon={savedRecipes.findIndex((x) => x.id === id) !== -1 ? faStar : faBorderStar}
-      className="cursor-pointer text-primary"
+      className="cursor-pointer icon"
       size="lg"
       onClick={() => manageSavedRecipes(id)} />
   };
@@ -120,16 +120,16 @@ function App() {
               </Button>
             </div>
           ))}
-          <div className="submit">
-            <Button type="submit" className="mr-2" onClick={handleSubmit}>
-              <FontAwesomeIcon icon={faSearch} /><span className="button-text ml-2">Find recipes</span>
+          <div className="buttons-container ml-1 mr-1">
+            <Button type="submit" className="submit-button mr-2" onClick={handleSubmit}>
+              <FontAwesomeIcon icon={faSearch} /> Find recipes
             </Button>
-            <Button onClick={() => setOpen(!open)}>
-              <FontAwesomeIcon icon={faList} /><span className="button-text ml-2">View saved recipes</span>
+            <Button onClick={() => setOpen(!open)} className="view-button">
+              <FontAwesomeIcon icon={faList} /> View saved recipes
             </Button>
           </div>
           <Row className="recipe-container ml-0 mr-0 grid-container justify-content-center">
-            {loading && <Spinner color="primary" />}
+            {loading && <Spinner className="spinner" />}
             {error && <Alert color="primary">{error}</Alert>}
             {currentRecipes.length > 0 && currentRecipes.map((e, i) =>
               <Card key={i} className="recipe-card ml-2 mr-2 mb-4">
@@ -157,7 +157,7 @@ function App() {
             )}
           </Row>
           {currentRecipes.length > 0 &&
-            <Row className="pagination-container flex justify-content-center">
+            <Row className="pagination-container flex justify-content-center m-auto">
               <Pagination jumpToPage={jumpToPage} active={active} />
             </Row>
           }

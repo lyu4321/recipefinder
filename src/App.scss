@@ -1,9 +1,15 @@
 $primary-color: #cb997e;
 $page-link-color: #000;
 $page-link-background-color: #fff;
+$alert-color: #004085;
+$alert-background-color: #cce5ff;
 
 * {
   font-family: "Poppins", sans-serif;
+}
+
+body {
+  overflow-y: scroll;
 }
 
 // Components
@@ -28,8 +34,18 @@ input {
   border: 1px solid $primary-color !important;
 }
 
+.spinner,
+.icon {
+  color: $alert-background-color;
+}
+
 .alert {
   padding: 0.375rem 0.75rem !important;
+}
+
+.alert-primary {
+  color: $alert-color;
+  background-color: $alert-background-color;
 }
 
 .cursor-pointer {
@@ -62,14 +78,19 @@ input {
   padding-bottom: 11rem;
 }
 
-.submit {
+.buttons-container {
+  max-width: 100%;
   margin-top: 1rem;
+}
+
+.submit-button,
+.view-button {
+  margin-bottom: 1rem;
 }
 
 .recipe-container {
   position: relative;
   max-width: 100%;
-  margin-top: 1rem;
 }
 
 .recipe-card {
@@ -161,8 +182,5 @@ input {
 @media (max-width: 480px) {
   .title {
     margin-top: 15rem;
-  }
-  .button-text {
-    display: none;
   }
 }
